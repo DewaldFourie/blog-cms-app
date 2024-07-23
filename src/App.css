@@ -70,6 +70,163 @@ form button {
   cursor: pointer;
 }
 
+.error-message {
+  color: red;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+/* ALL POSTS PAGE*/
+
+.all-posts-published{
+  border: 4px solid yellowgreen;
+}
+
+.all-posts-not-published {
+  border: 4px solid orange;
+}
+
+/* POST VIEW PAGE */
+
+.post-view-container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
 .postView-image {
-  height: 15rem;
+  float: right;
+  height: 300px;
+  margin-left: 12px;
+  border-radius: 10px;
+}
+
+.postView-main-text {
+  text-align: justify;
+  margin-top: 0;
+}
+
+.post-view-btns-container {
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4rem;
+  margin-top: 2rem;
+}
+
+.post-view-btn {
+  width: 15rem;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.post-view-btn.published {
+  background-color: orange;
+}
+
+.post-view-btn.not-published {
+  background-color: greenyellow;
+}
+
+.post-view-btn.update {
+  background-color: lightskyblue;
+}
+
+.post-view-btn.delete {
+  background-color: rgb(255, 84, 84);
+}
+
+.post-view-comments-container {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  gap: 1rem;
+  margin-top: 3rem;
+}
+
+.post-view-comment-box {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid;
+  border-radius: 15px;
+  padding: 15px;
+}
+
+.post-view-comment-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.post-view-comment-author {
+  margin: 0;
+}
+
+.post-view-comment-date {
+  margin: 0;
+}
+
+.post-view-comment-delete-btn {
+  width: 8rem;
+  align-self: flex-end;
+}
+
+/* POST UPDATE PAGE */
+
+.update-form-container {
+  display: flex;
+  gap: 3rem;
+}
+
+.postUpdate-label {
+  margin-top: 1rem;
+  margin-bottom: 5px;
+}
+
+.postUpdate-title-input {
+
+}
+
+.postUpdate-author-input {
+
+}
+
+.postUpdate-text-input {
+  height: 420px;
+} 
+
+.post-data-container {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+} 
+
+.image-data-container {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+}
+
+.image-url-container {
+  display: flex;
+  flex-direction: column;
+  
+}
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 5%;
+}
+
+.postUpdate-image {
+  height: 20rem;
+}
+
+.postUpdate-submit-btn {
+  width: 12rem;
+  align-self: center;
 }

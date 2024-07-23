@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import LoginPage from './pages/LoginPage';
@@ -8,6 +8,8 @@ import AllPosts from './pages/AllPosts';
 import PostView from './pages/PostView';
 import CreatePost from './pages/CreatePost';
 import CreateAuthor from './pages/CreateAuthor';
+import PostUpdate from './pages/PostUpdate';
+
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -16,7 +18,14 @@ const App = () => {
     // Function to fetch posts
     const fetchPosts = async () => {
       try {
-          const response = await fetch("https://blog-api-app.fly.dev/posts/", { mode: 'cors' });
+          const response = await fetch("https://blog-api-app.fly.dev/cms/posts", { 
+            method: 'GET',
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: 'include'
+          
+          });
           if (!response.ok) {
               throw new Error(`${response.status} ${response.statusText}`);
           }
@@ -28,14 +37,51 @@ const App = () => {
     };
 
 
+    const handleLogin = async (username, password) => {
+        try {
+          const response = await fetch("https://blog-api-app.fly.dev/cms/login", {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username, password }),
+            credentials: 'include',
+          });
 
-    const handleLogin = () => {
-        setIsLoggedIn(true);
+          if (response.ok) {
+            setIsLoggedIn(true);
+            return null;
+          } else {
+            // handle errors and respond with information
+            console.log("Login Failed: ", response.status, response.statusText);
+            const errorData = await response.json();
+            return errorData.message
+          }
+        } catch (error) {
+          console.log("Error logging in: ", error);
+          return "An unexpected error occurred. Please try again.";
+        }
     };
 
-    const handleLogout = () => {
-        setIsLoggedIn(false);
+    const handleLogout = async () => {
+        try {
+          const response = await fetch("https://blog-api-app.fly.dev/cms/logout", {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: 'include',
+          });
+          if (response.ok) {
+            setIsLoggedIn(false);
+          } else {
+            console.log("Logout Failed: ", response.status, response.statusText);
+          }
+        } catch (error) {
+          console.error("Error logging out:", error);
+        }
     };
+
 
     const handleCreatePost = (newPost) => {
         setPosts([...posts, { ...newPost, id: posts.length + 1, comments: [] }]);
@@ -44,6 +90,27 @@ const App = () => {
     const handleDeletePost = (postId) => {
         setPosts(posts.filter((post) => post.id !== postId));
     };
+
+    const handlePublish = async (postId, isPublished) => {
+      try {
+          const response = await fetch(`https://blog-api-app.fly.dev/cms/posts/${postId}/${isPublished ? 'unpublish' : 'publish'}`, {
+              method: 'PUT',
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              credentials: 'include',
+          });
+          if (response.ok) {
+              setPosts(posts.map(post => 
+                  post.id === postId ? { ...post, published: !isPublished } : post
+              ));
+          } else {
+              console.log(`Failed to ${isPublished ? 'unpublish' : 'publish'} post: `, response.status, response.statusText);
+          }
+      } catch (error) {
+          console.error(`Error ${isPublished ? 'unpublishing' : 'publishing'} post:`, error);
+      }
+  };
 
     const handleDeleteComment = (postId, commentId) => {
         setPosts(
@@ -55,14 +122,15 @@ const App = () => {
         );
     };
 
+
     useEffect(() => {
       const loadPosts = async () => {
         const fetchedPosts = await fetchPosts();
         setPosts(fetchedPosts);
       }
       loadPosts();  
-      
-    }, [])
+      console.log(`Logged in: ${isLoggedIn}`);
+    }, [isLoggedIn])
 
     return (
         <Router>
@@ -75,7 +143,7 @@ const App = () => {
                       path="/all-posts"
                       element={
                         isLoggedIn ? (
-                          <AllPosts posts={posts} />
+                          <AllPosts />
                         ) : (
                           <Navigate to="/login" />
                         )
@@ -87,8 +155,8 @@ const App = () => {
                         isLoggedIn ? (
                           <PostView
                             posts={posts}
-                            handlePublish={() => {}}
-                            handleUpdate={() => {}}
+                            handlePublish={handlePublish}
+                            handleUpdate={(postId) => navigate(`/posts/update_post/${postId}`)}
                             handleDelete={handleDeletePost}
                             handleDeleteComment={handleDeleteComment}
                           />
@@ -96,6 +164,10 @@ const App = () => {
                           <Navigate to="/login" />
                         )
                       }
+                    />
+                    <Route
+                      path="/posts/update_post/:postId"
+                      element={isLoggedIn ? <PostUpdate /> : <Navigate to="/login" />}
                     />
                     <Route
                       path="/create-post"
