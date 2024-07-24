@@ -35,19 +35,26 @@ const AllPosts = () => {
     }, [])
     
     return (
-        <div className="grid">
-            {posts.map((post) => (
-                <div key={post._id} className={post.published ? 'all-posts-published' : 'all-posts-not-published'}>
-                    <Link to={`/posts/${post._id}`}>
-                        <div>
-                            <h1>{post.title}</h1>
-                            <span>{post.author.username}</span>
-                            <span>{new Date(post.createdAt).toLocaleDateString('en-GB').replace(/\//g, '-')}</span>
-                        </div>
-                    </Link>
-                </div>
-            ))}
-        </div>
+        <>
+            <div className="all-posts-header-container">
+                <span className='all-posts-published-icon'>❑<p className='all-posts-p'>- Published</p></span>
+                <span className='all-posts-not-published-icon'>❑<p className='all-posts-p'>- Unpublished</p></span>
+            </div>
+            <div className="grid">
+                {posts.map((post) => (
+                    <div key={post._id} className={post.published ? 'all-posts-published' : 'all-posts-not-published'}>
+                        <Link to={`/posts/${post._id}`}>
+                            <div>
+                                <h1>{post.title}</h1>
+                                <span>{post.author.username}</span>
+                                <span>{new Date(post.createdAt).toLocaleDateString('en-GB').replace(/\//g, '-')}</span>
+                            </div>
+                        </Link>
+                    </div>
+                ))}
+            </div>
+        </>
+
     );
 };
 

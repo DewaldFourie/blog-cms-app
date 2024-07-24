@@ -53,6 +53,9 @@ const PostView = ({ handlePublish, handleUpdate, handleDelete }) => {
 
     return (
         <div className='post-view-container'>
+            <div className='post-view-back-btn-container'>
+                <button className='post-view-back-btn' onClick={() => navigate('/all-posts')}>⬅︎ All Posts</button>
+            </div>
             <div className="post-view-title-container">
                 <h1>{post.title}</h1>
             </div>
