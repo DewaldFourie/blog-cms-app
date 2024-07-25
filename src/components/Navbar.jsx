@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 
-const Navbar = ({ isLoggedIn, handleLogout }) => {
+const Navbar = ({ isLoggedIn, handleLogout, authorUsername }) => {
     const navigate = useNavigate();
 
     const logout = () => {
@@ -15,7 +15,10 @@ const Navbar = ({ isLoggedIn, handleLogout }) => {
         <nav>
             <Link to={"/"}>Home</Link>
             {isLoggedIn ? (
-                <button onClick={logout}>Logout</button>
+                <>
+                    <span>Welcome, {authorUsername}</span>
+                    <button onClick={logout}>Logout</button>
+                </>           
             ) : (
                 <Link to={'/login'}>Login</Link>
             )}

@@ -13,6 +13,8 @@ import PostUpdate from './pages/PostUpdate';
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [authorId, setAuthorId] = useState(null);
+    const [authorUsername, setAuthorUsername] = useState("");
     const [posts, setPosts] = useState([]);
 
     // Function to fetch posts
@@ -49,7 +51,10 @@ const App = () => {
           });
 
           if (response.ok) {
+            const data = await response.json();
             setIsLoggedIn(true);
+            setAuthorId(data.authorId);
+            setAuthorUsername(data.username);
             return null;
           } else {
             // handle errors and respond with information
@@ -74,6 +79,8 @@ const App = () => {
           });
           if (response.ok) {
             setIsLoggedIn(false);
+            setAuthorId(null);
+            setAuthorUsername("");
           } else {
             console.log("Logout Failed: ", response.status, response.statusText);
           }
@@ -134,7 +141,7 @@ const App = () => {
 
     return (
         <Router>
-            <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+            <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} authorUsername={authorUsername}/>
             <div className="outlet">
                 <Routes>
                     <Route path="/login" element={<LoginPage handleLogin={handleLogin} />} />
@@ -167,13 +174,13 @@ const App = () => {
                     />
                     <Route
                       path="/posts/update_post/:postId"
-                      element={isLoggedIn ? <PostUpdate /> : <Navigate to="/login" />}
+                      element={isLoggedIn ? <PostUpdate authorId={authorId}/> : <Navigate to="/login" />}
                     />
                     <Route
                       path="/create-post"
                       element={
                         isLoggedIn ? (
-                          <CreatePost handleCreatePost={handleCreatePost} />
+                          <CreatePost handleCreatePost={handleCreatePost} authorId={authorId} />
                         ) : (
                           <Navigate to="/login" />
                         )

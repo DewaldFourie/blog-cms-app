@@ -4,7 +4,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 // Function to fetch a single post
 const fetchPost = async (post_id) => {
     try {
-        const response = await fetch(`https://blog-api-app.fly.dev/posts/${post_id}`, { mode: 'cors' });
+        const response = await fetch(`https://blog-api-app.fly.dev/cms/posts/${post_id}`, { 
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+            },
+                credentials: 'include',
+        });
         if (!response.ok) {
             throw new Error(`${response.status} ${response.statusText}`);
         }
@@ -16,12 +22,12 @@ const fetchPost = async (post_id) => {
 };
 
 
-const PostUpdate = () => {
+const PostUpdate = ({ authorId }) => {
     const { postId } = useParams();
     const navigate = useNavigate();
 
     const [title, setTitle] = useState('');
-    const [author, setAuthor] = useState('');
+    const [author, setAuthor] = useState(authorId);
     const [text, setText] = useState('');
     const [imageURL, setImageURL] = useState('');
 
@@ -29,23 +35,24 @@ const PostUpdate = () => {
         const loadPost = async (post_id) => {
             const post = await fetchPost(post_id);
             setTitle(post.title);
-            setAuthor(post.author.username);
+            setAuthor(authorId);
             setText(post.text);
             setImageURL(post.imageURL);
         }
         loadPost(postId);
-    }, [postId])
+    }, [postId, authorId])
 
 
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`https://blog-api-app.fly.dev/posts/${postId}`, {
+            const response = await fetch(`https://blog-api-app.fly.dev/cms/posts/${postId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ title, author, text, imageURL })
+                body: JSON.stringify({ title, author, text, imageURL }),
+                credentials: 'include',
             });
             if (!response.ok) {
                 throw new Error(`${response.status} ${response.statusText}`);
@@ -82,8 +89,7 @@ const PostUpdate = () => {
                     <input
                         type="text"
                         value={author}
-                        onChange={(e) => setAuthor(e.target.value)}
-                        placeholder="Author"
+                        disabled
                         className='postUpdate-author-input'
                     />
                     <div className='image-url-container'>
@@ -101,8 +107,11 @@ const PostUpdate = () => {
                     </div>
                 </div>
             </div>
-
-            <button className='postUpdate-submit-btn' type="submit">Update Post</button>
+            <div className='postUpdate-btn-container'>
+                <button className='postUpdate-back-btn' onClick={() => navigate(`/posts/${postId}`)}>⬅︎ Back to Post</button>
+                <button className='postUpdate-submit-btn' type="submit">Update Post</button>
+            </div>
+            
         </form>
     );
 };
