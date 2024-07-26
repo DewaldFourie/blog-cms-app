@@ -3,11 +3,14 @@ import { Link } from 'react-router-dom';
 
 const HomePage = () => {
     return (
-        <div className="grid">
-            <Link to="/all-posts">All Posts</Link>
-            <Link to="/create-post">Create New Post</Link>
-            <Link to="/create-author">Create New Author</Link>
+        <div className='home-content'>
+            <div className="grid home-link-container">
+                <Link className='home-link-box' to="/all-posts">All Posts</Link>
+                <Link className='home-link-box' to="/create-post">Create New Post</Link>
+                <Link className='home-link-box' to="/create-author">Create New Author</Link>
+            </div>
         </div>
+
     );
 };
 

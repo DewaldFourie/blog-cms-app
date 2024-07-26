@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import LoginPage from './pages/LoginPage';
@@ -90,14 +90,6 @@ const App = () => {
     };
 
 
-    const handleCreatePost = (newPost) => {
-        setPosts([...posts, { ...newPost, id: posts.length + 1, comments: [] }]);
-    };
-
-    const handleDeletePost = (postId) => {
-        setPosts(posts.filter((post) => post.id !== postId));
-    };
-
     const handlePublish = async (postId, isPublished) => {
       try {
           const response = await fetch(`https://blog-api-app.fly.dev/cms/posts/${postId}/${isPublished ? 'unpublish' : 'publish'}`, {
@@ -117,7 +109,28 @@ const App = () => {
       } catch (error) {
           console.error(`Error ${isPublished ? 'unpublishing' : 'publishing'} post:`, error);
       }
+    };
+
+
+  const handleDeletePost = async (postId) => {
+    try {
+      const response = await fetch(`https://blog-api-app.fly.dev/cms/posts/${postId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+      if (response.ok) {
+        setPosts(posts.filter(post => post._id !== postId));
+      } else {
+        console.log("Failed to delete post: ", response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
   };
+
 
     const handleDeleteComment = (postId, commentId) => {
         setPosts(
@@ -163,7 +176,6 @@ const App = () => {
                           <PostView
                             posts={posts}
                             handlePublish={handlePublish}
-                            handleUpdate={(postId) => navigate(`/posts/update_post/${postId}`)}
                             handleDelete={handleDeletePost}
                             handleDeleteComment={handleDeleteComment}
                           />
@@ -180,7 +192,7 @@ const App = () => {
                       path="/create-post"
                       element={
                         isLoggedIn ? (
-                          <CreatePost handleCreatePost={handleCreatePost} authorId={authorId} />
+                          <CreatePost authorId={authorId} />
                         ) : (
                           <Navigate to="/login" />
                         )

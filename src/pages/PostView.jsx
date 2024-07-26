@@ -25,7 +25,7 @@ const fetchPost = async (post_id) => {
 };
 
 
-const PostView = ({ handlePublish, handleUpdate, handleDelete }) => {
+const PostView = ({ handlePublish, handleDelete }) => {
     const [post, setPost] = useState();
     const [comments, setComments] = useState([]);
     const [isPublished, setIsPublished] = useState(false);

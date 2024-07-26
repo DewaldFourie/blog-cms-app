@@ -231,6 +231,46 @@ form button {
   margin-bottom: 2rem;
 }
 
+/* HOME PAGE */
+
+.home-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-link-container {
+  border: 1px solid;
+  border-radius: 10px;
+  width: 100%;
+  height: 80vh;
+  align-items: center;
+  justify-content: center;
+  gap: 5rem;
+  background-color: #4f6772;
+}
+
+.home-link-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 15rem;
+  height: 10rem;
+  border: 1px solid;
+  border-radius: 15px;
+  padding: 1rem;
+  text-decoration: none;
+  color: #000;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  font-weight: bold;
+  background-color: rgb(217, 222, 230);
+}
+
+.home-link-box:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 /* ALL POSTS PAGE*/
 
 .all-posts-published{

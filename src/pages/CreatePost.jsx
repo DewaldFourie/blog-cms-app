@@ -1,27 +1,45 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const CreatePost = ({ handleCreatePost, authorId }) => {
+const CreatePost = ({ authorId }) => {
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState(authorId);
-    const [content, setContent] = useState('');
+    const [text, setText] = useState('');
     const [imageURL, setImageURL] = useState('');
-    const [published, setPublished]= useState(false);
+    const navigate = useNavigate();
 
-    const createPost = (e) => {
-        e.preventDefault();
-        handleCreatePost({ title, author, content, imageURL });
-    };
 
     useEffect(() => {
         setAuthor(authorId);
     }, [authorId]);
+
+
+    const handleCreate = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch(`https://blog-api-app.fly.dev/cms/posts`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ title, author, text, imageURL }),
+                credentials: 'include'
+            });
+            if (!response.ok) {
+                throw new Error(`${response.status} ${response.statusText}`);
+            }
+            navigate('/all-posts')
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     return (
         <>
             <div className='create-post-header-container'>
                 <h2 className='create-post-header'>Create a new BLOG post here</h2>
             </div>
-            <form onSubmit={createPost}>
+            <form onSubmit={handleCreate}>
                 <div className='update-form-container'>
                     <div className='post-data-container'>
                         <label className='postUpdate-label'>Title:</label>
@@ -33,8 +51,8 @@ const CreatePost = ({ handleCreatePost, authorId }) => {
                         />
                         <label className='postUpdate-label'>Blog Content:</label>
                         <textarea
-                            value={content}
-                            onChange={(e) => setContent(e.target.value)}
+                            value={text}
+                            onChange={(e) => setText(e.target.value)}
                             className='postUpdate-text-input'
                         />
                     </div>
