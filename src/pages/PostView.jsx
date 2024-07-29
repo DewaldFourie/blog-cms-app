@@ -25,7 +25,7 @@ const fetchPost = async (post_id) => {
 };
 
 
-const PostView = ({ handlePublish, handleDelete }) => {
+const PostView = ({ handlePublish, handleDelete, handleDeleteComment }) => {
     const [post, setPost] = useState();
     const [comments, setComments] = useState([]);
     const [isPublished, setIsPublished] = useState(false);
@@ -38,6 +38,19 @@ const PostView = ({ handlePublish, handleDelete }) => {
         setIsPublished(!isPublished);
     };
 
+    const handleDeleteClick = async () => {
+        await handleDelete(postId);
+        navigate('/all-posts');
+    }
+
+    const handleCommentDeleteClick = async (commentId) => {
+        await handleDeleteComment(postId, commentId);
+        setComments(prevComments => prevComments.filter(comment => comment._id !== commentId));
+        console.log("comment deleted");
+    };
+    
+
+
     useEffect(() => {
         const loadPost = async (post_id) => {
             const fetchedPost = await fetchPost(post_id);
@@ -46,7 +59,7 @@ const PostView = ({ handlePublish, handleDelete }) => {
             setIsPublished(fetchedPost.post.published)
         }
         loadPost(postId)
-        console.log(isPublished);
+        console.log(`isPublished: ${isPublished}`);
     }, [postId, isPublished])
 
     if (!post) return <div>Loading...</div>;
@@ -78,7 +91,7 @@ const PostView = ({ handlePublish, handleDelete }) => {
                     {isPublished ? 'Unpublish Post' : 'Publish Post'}
                 </button>
                 <button className='post-view-btn update' onClick={() => navigate(`/posts/update_post/${postId}`)}>Update Post</button>
-                <button className='post-view-btn delete' onClick={() => handleDelete(postId)}>Delete Post</button>
+                <button className='post-view-btn delete' onClick={handleDeleteClick}>Delete Post</button>
             </div>
             <div className='post-view-comments-container'>
                 {comments.map((comment) => (
@@ -88,7 +101,7 @@ const PostView = ({ handlePublish, handleDelete }) => {
                             <h5 className='post-view-comment-date'>{new Date(post.createdAt).toLocaleDateString('en-GB').replace(/\//g, '-')}</h5>
                         </div>
                         <p>{comment.text}</p>
-                        <button className='post-view-comment-delete-btn' onClick={() => handleDeleteComment(postId, comment.id)}>Delete Comment</button>
+                        <button className='post-view-comment-delete-btn' onClick={() => handleCommentDeleteClick(comment._id)}>Delete Comment</button>
                     </div>
                 ))}
             </div>

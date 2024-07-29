@@ -17,6 +17,7 @@ const App = () => {
     const [authorUsername, setAuthorUsername] = useState("");
     const [posts, setPosts] = useState([]);
 
+
     // Function to fetch posts
     const fetchPosts = async () => {
       try {
@@ -132,15 +133,33 @@ const App = () => {
   };
 
 
-    const handleDeleteComment = (postId, commentId) => {
-        setPosts(
-            posts.map((post) =>
-                post.id === postId
-                  ? { ...post, comments: post.comments.filter((comment) => comment.id !== commentId) }
-                  : post
-            )
-        );
-    };
+  const handleDeleteComment = async (postId, commentId) => {
+    try {
+        const response = await fetch(`https://blog-api-app.fly.dev/cms/posts/${postId}/comment/${commentId}`, {
+            method: 'DELETE',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: 'include',
+        });
+        if (response.ok) {
+            setPosts(prevPosts => prevPosts.map(post => {
+                if (post._id === postId) {
+                    return {
+                        ...post,
+                        comments: post.comments ? post.comments.filter(comment => comment._id !== commentId) : []
+                    };
+                }
+                return post;
+            }));
+        } else {
+            console.log("Failed to delete comment: ", response.status, response.statusText);
+        }
+    } catch (error) {
+        console.error("Error deleting comment:", error);
+    }
+};
+
 
 
     useEffect(() => {

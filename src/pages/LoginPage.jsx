@@ -38,7 +38,6 @@ const LoginPage = ({ handleLogin }) => {
                                             className="loginPage-form-control" 
                                             value={username}
                                             onChange={(e) => setUsername(e.target.value)}
-                                            placeholder="Username"
                                         />
                                     </div>
                                     <div className="loginPage-form-group">
@@ -48,7 +47,6 @@ const LoginPage = ({ handleLogin }) => {
                                             className="loginPage-form-control" 
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
-                                            placeholder="Password"
                                         />
                                     </div>
                                     <div className="loginPage-col-lg-12 loginPage-loginbttm">
