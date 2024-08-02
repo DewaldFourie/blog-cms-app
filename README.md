@@ -4,6 +4,10 @@ TravelBLOG CMS is a content management system designed for managing blog posts, 
 
 ## [DEMO - (click here to run the demo)](https://blog-cms-4bat6n6ee-dewaldfouries-projects.vercel.app)
 
+## Preview
+
+<img width="1422" alt="cms-preview" src="https://github.com/DewaldFourie/blog-cms-app/blob/main/public/cms-preview.png">
+
 ## Features
 
 - **User Friendly:** Intuitive and easy-to-navigate interface.
